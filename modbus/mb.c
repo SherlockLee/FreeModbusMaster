@@ -336,13 +336,10 @@ eMBPoll( void )
     static UCHAR    ucFunctionCode;
     static USHORT   usLength;
     static eMBException eException;
-	UCHAR			ucRecvBuf[128];
 
     int             i;
     eMBErrorCode    eStatus = MB_ENOERR;
     eMBEventType    eEvent;
-
-	memset(ucRecvBuf, UCHAR_MAX, sizeof(ucRecvBuf)/sizeof(UCHAR));
 
     /* Check if the protocol stack is ready. */
     if( eMBState != STATE_ENABLED )
@@ -361,7 +358,6 @@ eMBPoll( void )
 
         case EV_FRAME_RECEIVED:
             eStatus = peMBFrameReceiveCur( &ucRcvAddress, &ucMBFrame, &usLength );
-			strcpy_s(ucRecvBuf, sizeof(ucRecvBuf), ucMBFrame);
             if( eStatus == MB_ENOERR )
             {
                 /* Check if the frame is for us. If not ignore the frame. */
@@ -404,7 +400,6 @@ eMBPoll( void )
                 {
                     vMBPortTimersDelay( MB_ASCII_TIMEOUT_WAIT_BEFORE_SEND_MS );
                 }             
-				strcpy_s(ucRecvBuf, usLength, ucMBFrame);
                 eStatus = peMBFrameSendCur( ucMBAddress, ucMBFrame, usLength );
             }
             break;
